@@ -40,6 +40,7 @@
             <clobbers target="window.open" />
         </js-module>
         <config-file target="res/xml/config.xml" parent="/*">
+	    <preference name="hardwareAccelerated" value="false" />
             <preference name="inappwebview" value="org.apache.cordova.inappbrowser.inappwebview.system.SystemInAppWebView" />
             <feature name="InAppBrowser">
                 <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser"/>

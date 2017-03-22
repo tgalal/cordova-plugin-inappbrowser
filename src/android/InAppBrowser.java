@@ -775,6 +775,8 @@ public class InAppBrowser extends CordovaPlugin {
                 inAppWebView.getView().setId(Integer.valueOf(6));
                 if(allowFullScreen)
                     inAppWebView.setParentForAutoCustomViewHandling((ViewGroup)dialog.getWindow().getDecorView());
+                if(preferences.getBoolean("hardwareAccelerated", false))
+                    inAppWebView.getView().setLayerType(View.LAYER_TYPE_HARDWARE, null);
                 // File Chooser Implemented ChromeClient
 
                 inAppWebView.setInAppWebViewListener(new InAppBrowserWebViewEventsListener(edittext){
