@@ -33,6 +33,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.EditorInfo;
@@ -91,6 +92,7 @@ public class InAppBrowser extends CordovaPlugin {
     private static final String SHOULD_PAUSE = "shouldPauseOnSuspend";
     private static final Boolean DEFAULT_HARDWARE_BACK = true;
     private static final String USER_WIDE_VIEW_PORT = "useWideViewPort";
+    private static final String ALLOW_FULLSCREEN = "allowFullscreen";
 
     private InAppBrowserDialog dialog;
     private InAppWebView inAppWebView;
@@ -105,6 +107,7 @@ public class InAppBrowser extends CordovaPlugin {
     private boolean mediaPlaybackRequiresUserGesture = false;
     private boolean shouldPauseInAppBrowser = false;
     private boolean useWideViewPort = true;
+    private boolean allowFullScreen = true;
     private ValueCallback<Uri> mUploadCallback;
     private ValueCallback<Uri[]> mUploadCallbackLollipop;
     private final static int FILECHOOSER_REQUESTCODE = 1;
@@ -571,6 +574,10 @@ public class InAppBrowser extends CordovaPlugin {
             if (wideViewPort != null ) {
 		            useWideViewPort = wideViewPort.booleanValue();
             }
+            Boolean allowFullscreenFt = features.get(ALLOW_FULLSCREEN);
+            if (allowFullscreenFt != null ) {
+		            allowFullScreen = allowFullscreenFt.booleanValue();
+            }
         }
 
         final CordovaWebView thatWebView = this.webView;
@@ -744,6 +751,8 @@ public class InAppBrowser extends CordovaPlugin {
                 }
                 inAppWebView.getView().setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 inAppWebView.getView().setId(Integer.valueOf(6));
+                if(allowFullScreen)
+                    inAppWebView.setParentForAutoCustomViewHandling((ViewGroup)dialog.getWindow().getDecorView());
                 // File Chooser Implemented ChromeClient
 
                 inAppWebView.setInAppWebViewListener(new InAppBrowserWebViewEventsListener(edittext){
