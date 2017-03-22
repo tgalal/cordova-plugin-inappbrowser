@@ -40,14 +40,35 @@
             <clobbers target="window.open" />
         </js-module>
         <config-file target="res/xml/config.xml" parent="/*">
+            <preference name="inappwebview" value="org.apache.cordova.inappbrowser.inappwebview.system.SystemInAppWebView" />
             <feature name="InAppBrowser">
                 <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser"/>
             </feature>
         </config-file>
+        
 
         <source-file src="src/android/InAppBrowser.java" target-dir="src/org/apache/cordova/inappbrowser" />
         <source-file src="src/android/InAppBrowserDialog.java" target-dir="src/org/apache/cordova/inappbrowser" />
-        <source-file src="src/android/InAppChromeClient.java" target-dir="src/org/apache/cordova/inappbrowser" />
+        
+        <source-file src="src/android/inappwebview/base/InAppWebView.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/base" />
+        <source-file src="src/android/inappwebview/base/InAppWebViewAuthHandlerInterface.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/base" />
+        <source-file src="src/android/inappwebview/base/InAppWebViewCookieManagerInterface.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/base" />
+        <source-file src="src/android/inappwebview/base/InAppWebViewEventsListener.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/base" />
+        <source-file src="src/android/inappwebview/base/InAppWebViewInterface.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/base" />
+        <source-file src="src/android/inappwebview/base/InAppWebViewInterfaceProxy.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/base" />
+        <source-file src="src/android/inappwebview/base/InAppWebViewJavascriptResultInterface.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/base" />
+        <source-file src="src/android/inappwebview/base/InAppWebViewNavigationInterface.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/base" />
+        <source-file src="src/android/inappwebview/base/InAppWebViewPermissionsCallbackInterface.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/base" />
+        <source-file src="src/android/inappwebview/base/InAppWebViewSettingsInterface.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/base" />
+        <source-file src="src/android/inappwebview/base/SimpleInAppWebViewEventsListener.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/base" />
+        
+        <source-file src="src/android/inappwebview/system/SystemInAppWebView.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/system" />
+        <source-file src="src/android/inappwebview/system/SystemInAppWebViewChromeClient.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/system" />
+        <source-file src="src/android/inappwebview/system/SystemInAppWebViewClient.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/system" />
+        <source-file src="src/android/inappwebview/system/SystemInAppWebViewCookieManager.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/system" />
+        <source-file src="src/android/inappwebview/system/SystemInAppWebViewJavascriptResult.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/system" />
+        <source-file src="src/android/inappwebview/system/SystemInAppWebViewNavigation.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/system" />
+        <source-file src="src/android/inappwebview/system/SystemInAppWebViewSettings.java" target-dir="src/org/apache/cordova/inappbrowser/inappwebview/system" />
 
         <!--  drawable src/android/resources -->
         <resource-file src="src/android/res/drawable-hdpi/ic_action_next_item.png" target="res/drawable-hdpi/ic_action_next_item.png" />
