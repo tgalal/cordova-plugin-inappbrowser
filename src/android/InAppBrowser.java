@@ -91,6 +91,7 @@ public class InAppBrowser extends CordovaPlugin {
     private static final String SHOULD_PAUSE = "shouldPauseOnSuspend";
     private static final Boolean DEFAULT_HARDWARE_BACK = true;
     private static final String USER_WIDE_VIEW_PORT = "useWideViewPort";
+    private static final String PRIVATE_SESSION = "private";
 
     private InAppBrowserDialog dialog;
     private InAppWebView inAppWebView;
@@ -105,6 +106,7 @@ public class InAppBrowser extends CordovaPlugin {
     private boolean mediaPlaybackRequiresUserGesture = false;
     private boolean shouldPauseInAppBrowser = false;
     private boolean useWideViewPort = true;
+    private boolean privateSession = false;
     private ValueCallback<Uri> mUploadCallback;
     private ValueCallback<Uri[]> mUploadCallbackLollipop;
     private final static int FILECHOOSER_REQUESTCODE = 1;
@@ -571,6 +573,10 @@ public class InAppBrowser extends CordovaPlugin {
             if (wideViewPort != null ) {
 		            useWideViewPort = wideViewPort.booleanValue();
             }
+            Boolean privateSession = features.get(PRIVATE_SESSION);
+            if(privateSession != null) {
+                this.privateSession = privateSession.booleanValue();
+            }
         }
 
         final CordovaWebView thatWebView = this.webView;
@@ -802,6 +808,8 @@ public class InAppBrowser extends CordovaPlugin {
                 if (appendUserAgent != null) {
                     settings.setUserAgentString(settings.getUserAgentString() + appendUserAgent);
                 }
+
+                inAppWebView.togglePrivateMode(privateSession);
 
                 //Toggle whether this is enabled or not!
                 Bundle appSettings = cordova.getActivity().getIntent().getExtras();
