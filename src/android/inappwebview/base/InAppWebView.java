@@ -17,11 +17,13 @@ import org.apache.cordova.inappbrowser.inappwebview.system.SystemInAppWebView;
 
 public abstract class InAppWebView implements InAppWebViewInterface  {
     protected static final String LOG_TAG = "InAppWebView";
+    protected static final String URL_SEARCH = "http://google.com/search?q=%s";
 
     private InAppWebViewEventsListener inAppWebViewEventsListener;
     protected InAppWebViewNavigationInterface inAppWebViewNavigationInterface;
     protected InAppWebViewSettingsInterface inAppWebViewSettingsInterface;
     protected InAppWebViewCookieManagerInterface inAppWebViewCookieManagerInterface;
+
     private ViewGroup parentForAutoCustomViewHandling = null;
     private View currentFullscreenView;
     private InAppWebViewInterfaceProxy inAppWebViewInterfaceProxy = new InAppWebViewInterfaceProxy(this);
@@ -142,6 +144,29 @@ public abstract class InAppWebView implements InAppWebViewInterface  {
 
         if(inAppWebViewEventsListener != null)
             inAppWebViewEventsListener.onPageLoadFinished(url);
+    }
+
+    public void search(String term) {
+        loadUrl(getSearchUrl(term));
+    }
+
+    protected String getSearchUrl(String term) {
+        return String.format(URL_SEARCH, term);
+    }
+
+    public void load(String something) {
+        load(something, true);
+    }
+
+    public void load(String something, boolean search) {
+        if(search && (!something.contains(".") || something.contains(" "))) {
+            search(something);
+        } else {
+            if (!something.startsWith("http") && !something.startsWith("file:")) {
+                something = "http://" + something;
+            }
+            loadUrl(something);
+        }
     }
 
     protected final boolean onLoadUrl(String url) {
