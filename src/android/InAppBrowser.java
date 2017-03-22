@@ -744,6 +744,9 @@ public class InAppBrowser extends CordovaPlugin {
                 }
                 inAppWebView.getView().setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 inAppWebView.getView().setId(Integer.valueOf(6));
+
+                if(preferences.getBoolean("hardwareAccelerated", false))
+                    inAppWebView.getView().setLayerType(View.LAYER_TYPE_HARDWARE, null);
                 // File Chooser Implemented ChromeClient
 
                 inAppWebView.setInAppWebViewListener(new InAppBrowserWebViewEventsListener(edittext){
