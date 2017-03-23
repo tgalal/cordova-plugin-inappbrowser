@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ValueCallback;
+import android.widget.FrameLayout;
 
 import org.apache.cordova.LOG;
 import org.apache.cordova.inappbrowser.inappwebview.system.SystemInAppWebView;
@@ -15,11 +17,12 @@ import org.apache.cordova.inappbrowser.inappwebview.system.SystemInAppWebView;
  * Created by tarek on 3/20/17.
  */
 
-public abstract class InAppWebView implements InAppWebViewInterface  {
+public abstract class InAppWebView implements InAppWebViewInterface {
     protected static final String LOG_TAG = "InAppWebView";
     protected static final String URL_SEARCH = "http://google.com/search?q=%s";
 
     private InAppWebViewEventsListener inAppWebViewEventsListener;
+    private InAppWebViewSslErrorHandlerInterface sslErrorHandlerInterface;
     protected InAppWebViewNavigationInterface inAppWebViewNavigationInterface;
     protected InAppWebViewSettingsInterface inAppWebViewSettingsInterface;
     protected InAppWebViewCookieManagerInterface inAppWebViewCookieManagerInterface;
@@ -27,12 +30,15 @@ public abstract class InAppWebView implements InAppWebViewInterface  {
     private ViewGroup parentForAutoCustomViewHandling = null;
     private View currentFullscreenView;
     private InAppWebViewInterfaceProxy inAppWebViewInterfaceProxy = new InAppWebViewInterfaceProxy(this);
-    protected View webView;
+    private ViewGroup webViewContainer;
+    private View webView;
     private boolean isPrivateBrowsing;
     private Context context;
 
     public InAppWebView(Context context) {
         this.context = context;
+        this.webViewContainer = new FrameLayout(context);
+        this.sslErrorHandlerInterface = new InAppWebViewSSlErrorHandler();
     }
 
     public InAppWebViewInterfaceProxy getInAppWebViewInterfaceProxy() {
@@ -41,6 +47,7 @@ public abstract class InAppWebView implements InAppWebViewInterface  {
 
     public void init(View webView, InAppWebViewNavigationInterface inAppWebViewNavigationInterface, InAppWebViewSettingsInterface inAppWebViewSettingsInterface, InAppWebViewCookieManagerInterface inAppWebViewCookieManagerInterface) {
         this.webView = webView;
+        this.webViewContainer.addView(webView);
         this.inAppWebViewNavigationInterface = inAppWebViewNavigationInterface;
         this.inAppWebViewSettingsInterface = inAppWebViewSettingsInterface;
         this.inAppWebViewCookieManagerInterface = inAppWebViewCookieManagerInterface;
@@ -85,7 +92,7 @@ public abstract class InAppWebView implements InAppWebViewInterface  {
 
     @Override
     public View getView() {
-        return webView;
+        return webViewContainer;
     }
 
     protected void onDestroy() {}
@@ -188,6 +195,11 @@ public abstract class InAppWebView implements InAppWebViewInterface  {
             inAppWebViewEventsListener.onToggledFullScreen(inFullScreen);
     }
 
+    protected final void onSslError(SslError sslError, ValueCallback<Boolean> valueCallback) {
+        if(this.sslErrorHandlerInterface != null)
+            sslErrorHandlerInterface.handle(sslError, valueCallback);
+    }
+
     protected final void onShowCustomView(View view) {
         if(autoHandleCustomViews()) {
             currentFullscreenView = view;
@@ -228,6 +240,30 @@ public abstract class InAppWebView implements InAppWebViewInterface  {
             }
 
             inAppWebViewEventsListener.onPageLoadStarted(newloc);
+        }
+    }
+
+    private class InAppWebViewSSlErrorHandler implements InAppWebViewSslErrorHandlerInterface {
+        @Override
+        public void handle(SslError sslError, final ValueCallback<Boolean> callback) {
+            webViewContainer.removeAllViews();
+            SslErrorView sslErrorView = new SslErrorView(getContext(), sslError){
+                @Override
+                void onProceed() {
+                    webViewContainer.removeAllViews();
+                    webViewContainer.addView(webView);
+                    callback.onReceiveValue(true);
+                }
+
+                @Override
+                void onCancel() {
+                    webViewContainer.removeAllViews();
+                    webViewContainer.addView(webView);
+                    callback.onReceiveValue(false);
+                }
+            };
+            webViewContainer.addView(sslErrorView);
+            sslErrorView.requestFocus();
         }
     }
 }

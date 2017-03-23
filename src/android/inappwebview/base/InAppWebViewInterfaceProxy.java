@@ -1,6 +1,7 @@
 package org.apache.cordova.inappbrowser.inappwebview.base;
 
 import android.net.Uri;
+import android.net.http.SslError;
 import android.view.View;
 import android.webkit.ValueCallback;
 
@@ -13,6 +14,10 @@ public class InAppWebViewInterfaceProxy implements InAppWebViewEventsListener {
 
     public InAppWebViewInterfaceProxy(InAppWebView inAppWebView) {
         this.inAppWebView = inAppWebView;
+    }
+
+    public void onSslError(SslError sslError, ValueCallback<Boolean> valueCallback) {
+        this.inAppWebView.onSslError(sslError, valueCallback);
     }
 
     @Override

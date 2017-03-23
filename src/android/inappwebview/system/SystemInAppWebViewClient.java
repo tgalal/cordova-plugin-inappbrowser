@@ -1,9 +1,12 @@
 package org.apache.cordova.inappbrowser.inappwebview.system;
 
 import android.graphics.Bitmap;
+import android.net.http.SslError;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.HttpAuthHandler;
+import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -71,4 +74,19 @@ public class SystemInAppWebViewClient extends WebViewClient {
                 }
             }, host, realm);
         }
+
+    @Override
+    public void onReceivedSslError(final WebView view, final SslErrorHandler handler, final SslError error) {
+        inAppWebViewInterfaceProxy.onSslError(error, new ValueCallback<Boolean>() {
+            @Override
+            public void onReceiveValue(Boolean value) {
+                if(value)
+                    handler.proceed();
+                else
+                    handler.cancel();
+
+                SystemInAppWebViewClient.super.onReceivedSslError(view, handler, error);
+            }
+        });
+    }
 }
