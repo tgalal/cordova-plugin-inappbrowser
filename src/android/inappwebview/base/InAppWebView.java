@@ -11,7 +11,6 @@ import android.webkit.ValueCallback;
 import android.widget.FrameLayout;
 
 import org.apache.cordova.LOG;
-import org.apache.cordova.inappbrowser.inappwebview.system.SystemInAppWebView;
 
 /**
  * Created by tarek on 3/20/17.
@@ -139,6 +138,11 @@ public abstract class InAppWebView implements InAppWebViewInterface {
     protected final void onGeolocationPermissionsShowPrompt(String origin, InAppWebViewPermissionsCallbackInterface callback) {
         if(inAppWebViewEventsListener != null)
             inAppWebViewEventsListener.onGeolocationPermissionsShowPrompt(origin, callback);
+    }
+
+    protected final void onProgressChanged(int progress) {
+        if(inAppWebViewEventsListener != null)
+            inAppWebViewEventsListener.onProgressChanged(progress);
     }
 
     protected final void onPageLoadFinished(String url) {

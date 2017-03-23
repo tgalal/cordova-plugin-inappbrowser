@@ -63,4 +63,9 @@ public class SimpleInAppWebViewEventsListener implements InAppWebViewEventsListe
     public boolean onJsPrompt(String url, String message, String defaultValue, InAppWebViewJavascriptResultInterface result) {
         return false;
     }
+
+    @Override
+    public void onProgressChanged(int progress) {
+
+    }
 }

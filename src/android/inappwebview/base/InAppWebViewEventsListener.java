@@ -19,4 +19,5 @@ public interface InAppWebViewEventsListener {
     boolean onShowFileChooser(ValueCallback<Uri[]> filePathCallback, String[] acceptTypes, boolean capture);
     void onGeolocationPermissionsShowPrompt(String origin, InAppWebViewPermissionsCallbackInterface callback);
     boolean onJsPrompt(String url, String message, String defaultValue, InAppWebViewJavascriptResultInterface result);
+    void onProgressChanged(int progress);
 }

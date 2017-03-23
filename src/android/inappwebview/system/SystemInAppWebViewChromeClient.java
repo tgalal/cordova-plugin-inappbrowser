@@ -95,6 +95,12 @@ class SystemInAppWebViewChromeClient extends WebChromeClient {
             }
         }, new String[]{acceptType}, false);
     }
+
+    @Override
+    public void onProgressChanged(WebView view, int newProgress) {
+        super.onProgressChanged(view, newProgress);
+        inAppWebViewInterfaceProxy.onProgressChanged(newProgress);
+    }
 }
 
 class FullscreenSupportSystemInAppWebViewChromeClient extends SystemInAppWebViewChromeClient {

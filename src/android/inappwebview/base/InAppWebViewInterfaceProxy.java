@@ -74,4 +74,9 @@ public class InAppWebViewInterfaceProxy implements InAppWebViewEventsListener {
     public boolean onJsPrompt(String url, String message, String defaultValue, InAppWebViewJavascriptResultInterface result) {
         return this.inAppWebView.onJsPrompt(url, message, defaultValue, result);
     }
+
+    @Override
+    public void onProgressChanged(int progress) {
+        this.inAppWebView.onProgressChanged(progress);
+    }
 }

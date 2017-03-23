@@ -22,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.provider.Browser;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -42,9 +43,11 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import org.apache.cordova.CallbackContext;
@@ -756,6 +759,19 @@ public class InAppBrowser extends CordovaPlugin {
                     }
                 });
 
+
+                //progressbar
+
+                final ProgressBar loadingBar = new ProgressBar(cordova.getActivity(), null, android.R.attr.progressBarStyleHorizontal);
+                loadingBar.setBackgroundColor(Color.WHITE);
+                loadingBar.setMax(100);
+                loadingBar.setVisibility(View.GONE);
+                loadingBar.setProgress(0);
+                LinearLayout.LayoutParams loadingBarParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                loadingBarParams.bottomMargin = -9;
+                loadingBar.setLayoutParams(loadingBarParams);
+                loadingBar.setPadding(0, -8, 0, 0);
+
                 // WebView
                 String webViewClassName = preferences.getString("inappwebview", SystemInAppWebView.class.getName());
                 LOG.d(LOG_TAG, "Bootstrapping inappwebview from: " + webViewClassName);
@@ -782,6 +798,29 @@ public class InAppBrowser extends CordovaPlugin {
                 // File Chooser Implemented ChromeClient
 
                 inAppWebView.setInAppWebViewListener(new InAppBrowserWebViewEventsListener(edittext){
+
+                    @Override
+                    public void onProgressChanged(int progress) {
+                        loadingBar.setProgress(progress);
+                    }
+
+                    @Override
+                    public void onPageLoadStarted(String url) {
+                        super.onPageLoadStarted(url);
+                        loadingBar.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onPageLoadFinished(String url) {
+                        super.onPageLoadFinished(url);
+                        loadingBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onReceivedLoadError(int errorCode, String description, String failingUrl) {
+                        super.onReceivedLoadError(errorCode, description, failingUrl);
+                        loadingBar.setVisibility(View.GONE);
+                    }
 
                     @Override
                     public boolean onShowFileChooser(final ValueCallback<Uri[]> filePathCallback, String[] acceptTypes, boolean capture) {
@@ -878,6 +917,8 @@ public class InAppBrowser extends CordovaPlugin {
                     // Add our toolbar to our main view/layout
                     main.addView(toolbar);
                 }
+
+                main.addView(loadingBar);
 
                 // Add our webview to our main view/layout
                 main.addView(inAppWebView.getView());
